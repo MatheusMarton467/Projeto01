@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>QuestMe — Missões Diárias (Protótipo)</title>
+    <meta name="description" content="QuestMe — protótipo de aplicativo gamificado para missões diárias. Feito em HTML/CSS/JS.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+        <header class="topbar">
+            <div class="brand">
+                <h1>QuestMe</h1>
+                <p class="tag">Missões diárias • Gamificação</p>
+            </div>
+
+            <div class="status">
+                <div class="xp-row">
+                    <div class="xp-label">XP <span id="xp-value">0</span></div>
+                    <div class="xp-bar">
+                        <div id="xp-fill" class="xp-fill" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="lvl-row">
+                    <div class="lvl">Nível <strong id="level-value">1</strong></div>
+                    <div class="gems">💎 <span id="gems-value">0</span></div>
+                </div>
+            </div>
+        </header>
+
+        <section class="actions">
+            <div class="add-mission">
+                <input id="mission-input" placeholder="Nova missão (ex: Ler 20 páginas)" maxlength="80" />
+                <select id="difficulty">
+                    <option value="1">Fácil (5 XP)</option>
+                    <option value="2">Médio (10 XP)</option>
+                    <option value="3">Difícil (20 XP)</option>
+                </select>
+                <button id="add-btn" class="btn primary">Adicionar</button>
+            </div>
+            <div class="quick-actions">
+                <button id="btn-gacha" class="btn">💠 Invocar (Gacha)</button>
+                <button id="btn-char" class="btn">🧬 Personagens</button>
+                <button id="btn-ach" class="btn">🏅 Conquistas</button>
+            </div>
+        </section>
+
+        <section class="missions">
+            <h2>Missões do Dia</h2>
+            <ul id="mission-list" class="mission-list"></ul>
+            <p id="empty" class="muted">Você não tem missões — adicione uma acima.</p>
+        </section>
+
+        <section class="footer-notes">
+            <small>Protótipo: funcionalidades básicas · Salva localmente no navegador.</small>
+            <br>
+            <small>© 2025 Matheus Marton | Feito com 💙</small>
+        </section>
+    </main>
+
+    <div id="modal" class="modal hidden">
+        <div id="modal-content" class="modal-content">
+            </div>
+    </div>
+
+    <canvas id="confetti" class="confetti-canvas"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>
