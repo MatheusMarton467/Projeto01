@@ -347,14 +347,17 @@ const ACHIEVEMENT_LIST = {
 
 
 function checkAchievements() {
-  let unlocked = false;
-  for (const id in ACHIEVEMENT_LIST) {
-    const ach = ACHIEVEMENT_LIST[id];
+    for (const id in ACHIEVEMENT_LIST) {
+        const ach = ACHIEVEMENT_LIST[id];
 
-    if (ach.condition(state) && !state.achieved.includes(id)) {
-      unlocked = true;
+        // 1. Condição: Checa se foi alcançada E se AINDA não está no estado
+        if (ach.condition(state) && !state.achieved.includes(id)) {
 
-      showModal(`
+            state.achieved.push(id); 
+            
+            saveState(); 
+
+            showModal(`
                 <div data-action="achievement" data-ach-id="${id}" data-gems="${ach.reward.gems}" data-xp="${ach.reward.xp}">
                     <h3>🏆 NOVA CONQUISTA!</h3>
                     <h4 style="text-align: center;">${ach.name}</h4>
@@ -364,10 +367,9 @@ function checkAchievements() {
                     </div>
                 </div>
             `);
+        }
     }
-  }
 }
-
 
 function openAchievements() {
   let html = `<h3>🏅 Conquistas (${state.achieved.length} / ${Object.keys(ACHIEVEMENT_LIST).length})</h3>
@@ -1130,7 +1132,7 @@ function openChars() {
   });
 
   html += `</div>`;
-  // CRÍTICO: Usar updateModalContent para a navegação interna
+
   updateModalContent(html);
 
   // CORREÇÃO DOS LISTENERS: Usando el.modalContent
@@ -1228,11 +1230,37 @@ function renderCharGallery(themeId) {
 }
 
 // --- FUNÇÕES GACHA (INCLUINDO SELEÇÃO DE TEMA) ---
+function renderGachaError() {
+  const needed = 5 - state.gems;
+  const htmlContent = `
+        <h3 style="text-align: center;">💎 Gems Insuficientes</h3>
+        <p style="text-align: center; margin-top: 20px;">
+            Você precisa de mais **${needed} Gems** para invocar.
+        </p>
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn btn-voltar" onclick="hideModal()" 
+                    style="
+                        background: var(--accent-c); 
+                        color: var(--background-c); 
+                        font-weight: 700; 
+                        padding: 10px 20px; 
+                        border-radius: 8px;
+                    ">
+                Voltar
+            </button>
+        </div>
+    `;
+
+  // CRÍTICO: Usa updateModalContent, que é o sistema de NAVEGAÇÃO
+  // e garante que o modal de navegação esteja ativo (isModalOpen = true)
+  updateModalContent(htmlContent);
+  // Nota: O botão "X" e o clique fora (hideModal) já estão no updateModalContent
+}
 
 function openGacha() {
-  if (state.gems < 5) {
-    // Usa showModal (fila) para mensagens simples de erro
-    showModal('<h3>💠 Invocar (Gacha)</h3><p>Você precisa de **5 gems** para invocar.</p>');
+  const cost = 5;
+  if (state.gems < cost) {
+    renderGachaError();
     return;
   }
 
@@ -1284,10 +1312,8 @@ function openGacha() {
 
   html += `</div>`;
 
-  // CRÍTICO: Usar updateModalContent para exibir a tela de seleção
   updateModalContent(html);
 
-  // CRÍTICO: Anexar o event listener aos novos cards de tema
   el.modalContent.querySelectorAll('.gacha-theme-card').forEach(card => {
     card.addEventListener('click', (e) => {
       const themeId = e.currentTarget.dataset.themeId;
@@ -1478,9 +1504,9 @@ function processGachaReveal(themeId) {
         processGachaPull(themeId);
       });
     } else {
+      // 🛑 MUDANÇA CRÍTICA AQUI: Não usar showModal (fila), mas sim um alerta de navegação
       newRerollBtn.addEventListener('click', () => {
-        const needed = 5 - state.gems;
-        showModal(`<h3>💎 Gems Insuficientes</h3><p>Você precisa de mais **${needed} Gems** para invocar novamente.</p>`);
+        renderGachaError(); // Usa a função que lida com o erro de forma prioritária
       });
     }
   }
@@ -1576,18 +1602,20 @@ function processQueue() {
   el.modal.addEventListener('click', (e) => {
     if (e.target === el.modal) hideModal();
   }, { once: true });
-  applyNotificationReward();
 }
 
 function hideModal() {
   console.log("[hideModal] Fechando modal.");
   el.modal.classList.remove('show');
+  setTimeout(() => {
+    // Essas ações devem ocorrer SÓ DEPOIS do atraso:
+    el.modalContent.classList.remove('message-modal-container');
+    el.modalContent.innerHTML = '';
+    isModalOpen = false;
 
-  el.modalContent.classList.remove('message-modal-container');
-  el.modalContent.innerHTML = '';
-
-  isModalOpen = false;
-  processQueue();
+    // Finalmente, processa o próximo da fila
+    processQueue();
+  }, 300); // Tente 300 milissegundos. Se for muito lento, use 200ms.
 }
 
 function updateModalContent(htmlContent) {
