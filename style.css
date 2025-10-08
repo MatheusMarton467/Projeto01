@@ -520,26 +520,45 @@ select:focus {
 }
 
 .gacha-result-card-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  margin-top: 15px;
-  margin-bottom: 20px;
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
 }
 
 .gacha-result-card {
-  width: 180px;
-  height: auto;
-  max-width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  margin-bottom: 10px;
+    /* O SELETOR SIMPLES deve manter o tamanho padrão (ex: para a Galeria). 
+       Se a Galeria usa o mesmo seletor, mantemos 180px como padrão
+       e usamos um seletor mais específico abaixo para o Gacha. 
+    */
+    width: 180px; /* Mantém o tamanho padrão para a Galeria, se aplicável */
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
 }
+
+
+/* 2. Targeta a imagem dentro do contêiner de resultado do Gacha e força a largura de 250px */
+.gacha-result-card-container .gacha-result-card {
+    /* Este seletor mais específico garante a prioridade no modal! */
+    width: 250px !important; /* Força 250px de largura */
+    height: auto !important; /* Altura se ajusta perfeitamente à proporção da arte Genshin */
+    
+    /* Usa 'cover' para preencher o espaço, mas com 'height: auto', a proporção é mantida */
+    object-fit: cover; 
+    
+    /* Zera a largura máxima para que 250px seja respeitado */
+    max-width: none !important;
+}
+
 
 .gacha-result-card.locked {
   filter: grayscale(100%) brightness(50%);
@@ -614,6 +633,7 @@ select:focus {
   border: 4px solid rgb(var(--glow-rgb));
 }
 
+
 .card-gallery-glow {
   box-shadow:
     0 0 8px 1px rgba(var(--glow-rgb), 0.8),
@@ -631,4 +651,66 @@ select:focus {
     0 0 20px 0px rgba(var(--glow-rgb), 0.8),
     0 0 35px 0px rgba(var(--glow-rgb), 0.4);
   z-index: 5;
+}
+/* ====================================================================
+   ESTILOS PARA O MODAL DE VISUALIZAÇÃO DE DETALHE DA GALERIA
+   ==================================================================== */
+
+.card-detail-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    /* Garante que o conteúdo seja centralizado verticalmente no modal */
+    max-height: 80vh; 
+    overflow-y: auto;
+}
+
+/* Define o tamanho da imagem da carta quando visualizada individualmente */
+.card-detail-image {
+    /* Define um tamanho grande para o destaque (Ajuste se precisar de mais ou menos) */
+    width: 350px; /* Mais largo para o destaque */
+    height: auto; /* Mantém a proporção perfeita! */
+    
+    /* Garante que a imagem se ajuste à largura máxima do modal em telas menores */
+    max-width: 100%;
+    
+    /* CRÍTICO: Mantém a proporção correta e garante que a imagem não seja cortada */
+    object-fit: cover; 
+    
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+    margin-bottom: 20px;
+    
+    /* Usa a borda de raridade (já definida nas classes rarity-XXX) */
+    padding: 6px; 
+}
+
+/* ESTILO CRÍTICO PARA IMAGENS BLOQUEADAS NA VISUALIZAÇÃO GRANDE */
+.card-detail-image.locked-detail {
+    /* Deixa a imagem em preto e branco e mais escura */
+    filter: grayscale(100%) brightness(30%); 
+    opacity: 0.9;
+}
+
+.card-detail-name {
+    font-size: 2.2rem;
+    margin: 10px 0 5px 0;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.card-detail-rarity {
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    /* As cores serão aplicadas via classes rarity-XXX do seu CSS */
+}
+
+/* Ajuste o modal para telas pequenas se necessário */
+@media (max-width: 600px) {
+    .card-detail-image {
+        width: 100%; /* Ocupa toda a largura do modal */
+    }
 }

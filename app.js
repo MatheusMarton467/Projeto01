@@ -347,17 +347,17 @@ const ACHIEVEMENT_LIST = {
 
 
 function checkAchievements() {
-    for (const id in ACHIEVEMENT_LIST) {
-        const ach = ACHIEVEMENT_LIST[id];
+  for (const id in ACHIEVEMENT_LIST) {
+    const ach = ACHIEVEMENT_LIST[id];
 
-        // 1. Condição: Checa se foi alcançada E se AINDA não está no estado
-        if (ach.condition(state) && !state.achieved.includes(id)) {
+    // 1. Condição: Checa se foi alcançada E se AINDA não está no estado
+    if (ach.condition(state) && !state.achieved.includes(id)) {
 
-            state.achieved.push(id); 
-            
-            saveState(); 
+      state.achieved.push(id);
 
-            showModal(`
+      saveState();
+
+      showModal(`
                 <div data-action="achievement" data-ach-id="${id}" data-gems="${ach.reward.gems}" data-xp="${ach.reward.xp}">
                     <h3>🏆 NOVA CONQUISTA!</h3>
                     <h4 style="text-align: center;">${ach.name}</h4>
@@ -367,8 +367,8 @@ function checkAchievements() {
                     </div>
                 </div>
             `);
-        }
     }
+  }
 }
 
 function openAchievements() {
@@ -418,7 +418,8 @@ const GACHA_THEMES = [
   { id: 'pokemon', name: 'Pokémon', path: 'Gatcha/Pokemon', cost: 5, coverExt: 'png' },
   { id: 'digimon', name: 'Digimon', path: 'Gatcha/Digimon Cards', cost: 5, coverExt: 'jpg' }, // PNG
   { id: 'yugioh', name: 'Yu-Gi-Oh!', path: 'Gatcha/Yugioh', cost: 5, coverExt: 'png' },
-  { id: 'naruto', name: 'Naruto', path: 'Gatcha/NarutoTCG', cost: 5, coverExt: 'jpg' } // PNG
+  { id: 'naruto', name: 'Naruto', path: 'Gatcha/NarutoTCG', cost: 5, coverExt: 'jpg' },
+  { id: 'genshin', name: 'Genshin', path: 'Gatcha/Genshin', cost: 5, coverExt: 'png' },
 ];
 
 // O CHAR_POOL deve ser uma lista plana de *todas* as cartas.
@@ -1067,7 +1068,116 @@ const CHAR_POOL = [
   { id: 'naru-298', themeId: 'naruto', name: 'Naruto Card 298', fileCode: 'Carta084', rarity: 'Lendária' },
   { id: 'naru-299', themeId: 'naruto', name: 'Naruto Card 299', fileCode: 'Carta129', rarity: 'Lendária' },
   { id: 'naru-300', themeId: 'naruto', name: 'Naruto Card 300', fileCode: 'Carta286', rarity: 'Lendária' },
-
+  // Genshin
+  { id: 'genshin-001', themeId: 'genshin', name: 'Genshin Card 001', fileCode: 'Carta022', rarity: 'Comum' },
+  { id: 'genshin-002', themeId: 'genshin', name: 'Genshin Card 002', fileCode: 'Carta090', rarity: 'Comum' },
+  { id: 'genshin-003', themeId: 'genshin', name: 'Genshin Card 003', fileCode: 'Carta058', rarity: 'Comum' },
+  { id: 'genshin-004', themeId: 'genshin', name: 'Genshin Card 004', fileCode: 'Carta018', rarity: 'Comum' },
+  { id: 'genshin-005', themeId: 'genshin', name: 'Genshin Card 005', fileCode: 'Carta030', rarity: 'Comum' },
+  { id: 'genshin-006', themeId: 'genshin', name: 'Genshin Card 006', fileCode: 'Carta084', rarity: 'Comum' },
+  { id: 'genshin-007', themeId: 'genshin', name: 'Genshin Card 007', fileCode: 'Carta003', rarity: 'Comum' },
+  { id: 'genshin-008', themeId: 'genshin', name: 'Genshin Card 008', fileCode: 'Carta046', rarity: 'Comum' },
+  { id: 'genshin-009', themeId: 'genshin', name: 'Genshin Card 009', fileCode: 'Carta007', rarity: 'Comum' },
+  { id: 'genshin-010', themeId: 'genshin', name: 'Genshin Card 010', fileCode: 'Carta034', rarity: 'Comum' },
+  { id: 'genshin-011', themeId: 'genshin', name: 'Genshin Card 011', fileCode: 'Carta048', rarity: 'Comum' },
+  { id: 'genshin-012', themeId: 'genshin', name: 'Genshin Card 012', fileCode: 'Carta054', rarity: 'Comum' },
+  { id: 'genshin-013', themeId: 'genshin', name: 'Genshin Card 013', fileCode: 'Carta061', rarity: 'Comum' },
+  { id: 'genshin-014', themeId: 'genshin', name: 'Genshin Card 014', fileCode: 'Carta072', rarity: 'Comum' },
+  { id: 'genshin-015', themeId: 'genshin', name: 'Genshin Card 015', fileCode: 'Carta068', rarity: 'Comum' },
+  { id: 'genshin-016', themeId: 'genshin', name: 'Genshin Card 016', fileCode: 'Carta015', rarity: 'Comum' },
+  { id: 'genshin-017', themeId: 'genshin', name: 'Genshin Card 017', fileCode: 'Carta004', rarity: 'Comum' },
+  { id: 'genshin-018', themeId: 'genshin', name: 'Genshin Card 018', fileCode: 'Carta016', rarity: 'Comum' },
+  { id: 'genshin-019', themeId: 'genshin', name: 'Genshin Card 019', fileCode: 'Carta071', rarity: 'Comum' },
+  { id: 'genshin-020', themeId: 'genshin', name: 'Genshin Card 020', fileCode: 'Carta056', rarity: 'Comum' },
+  { id: 'genshin-021', themeId: 'genshin', name: 'Genshin Card 021', fileCode: 'Carta053', rarity: 'Comum' },
+  { id: 'genshin-022', themeId: 'genshin', name: 'Genshin Card 022', fileCode: 'Carta078', rarity: 'Comum' },
+  { id: 'genshin-023', themeId: 'genshin', name: 'Genshin Card 023', fileCode: 'Carta085', rarity: 'Comum' },
+  { id: 'genshin-024', themeId: 'genshin', name: 'Genshin Card 024', fileCode: 'Carta031', rarity: 'Comum' },
+  { id: 'genshin-025', themeId: 'genshin', name: 'Genshin Card 025', fileCode: 'Carta036', rarity: 'Comum' },
+  { id: 'genshin-026', themeId: 'genshin', name: 'Genshin Card 026', fileCode: 'Carta039', rarity: 'Comum' },
+  { id: 'genshin-027', themeId: 'genshin', name: 'Genshin Card 027', fileCode: 'Carta047', rarity: 'Comum' },
+  { id: 'genshin-028', themeId: 'genshin', name: 'Genshin Card 028', fileCode: 'Carta008', rarity: 'Comum' },
+  { id: 'genshin-029', themeId: 'genshin', name: 'Genshin Card 029', fileCode: 'Carta010', rarity: 'Comum' },
+  { id: 'genshin-030', themeId: 'genshin', name: 'Genshin Card 030', fileCode: 'Carta040', rarity: 'Comum' },
+  { id: 'genshin-031', themeId: 'genshin', name: 'Genshin Card 031', fileCode: 'Carta026', rarity: 'Comum' },
+  { id: 'genshin-032', themeId: 'genshin', name: 'Genshin Card 032', fileCode: 'Carta065', rarity: 'Comum' },
+  { id: 'genshin-033', themeId: 'genshin', name: 'Genshin Card 033', fileCode: 'Carta074', rarity: 'Comum' },
+  { id: 'genshin-034', themeId: 'genshin', name: 'Genshin Card 034', fileCode: 'Carta006', rarity: 'Comum' },
+  { id: 'genshin-035', themeId: 'genshin', name: 'Genshin Card 035', fileCode: 'Carta070', rarity: 'Comum' },
+  { id: 'genshin-036', themeId: 'genshin', name: 'Genshin Card 036', fileCode: 'Carta089', rarity: 'Comum' },
+  { id: 'genshin-037', themeId: 'genshin', name: 'Genshin Card 037', fileCode: 'Carta057', rarity: 'Comum' },
+  { id: 'genshin-038', themeId: 'genshin', name: 'Genshin Card 038', fileCode: 'Carta013', rarity: 'Comum' },
+  { id: 'genshin-039', themeId: 'genshin', name: 'Genshin Card 039', fileCode: 'Carta066', rarity: 'Comum' },
+  { id: 'genshin-040', themeId: 'genshin', name: 'Genshin Card 040', fileCode: 'Carta028', rarity: 'Comum' },
+  { id: 'genshin-041', themeId: 'genshin', name: 'Genshin Card 041', fileCode: 'Carta033', rarity: 'Comum' },
+  { id: 'genshin-042', themeId: 'genshin', name: 'Genshin Card 042', fileCode: 'Carta014', rarity: 'Comum' },
+  { id: 'genshin-043', themeId: 'genshin', name: 'Genshin Card 043', fileCode: 'Carta025', rarity: 'Comum' },
+  { id: 'genshin-044', themeId: 'genshin', name: 'Genshin Card 044', fileCode: 'Carta019', rarity: 'Comum' },
+  { id: 'genshin-045', themeId: 'genshin', name: 'Genshin Card 045', fileCode: 'Carta077', rarity: 'Comum' },
+  { id: 'genshin-046', themeId: 'genshin', name: 'Genshin Card 046', fileCode: 'Carta041', rarity: 'Comum' },
+  { id: 'genshin-047', themeId: 'genshin', name: 'Genshin Card 047', fileCode: 'Carta083', rarity: 'Comum' },
+  { id: 'genshin-048', themeId: 'genshin', name: 'Genshin Card 048', fileCode: 'Carta029', rarity: 'Comum' },
+  { id: 'genshin-049', themeId: 'genshin', name: 'Genshin Card 049', fileCode: 'Carta080', rarity: 'Comum' },
+  { id: 'genshin-050', themeId: 'genshin', name: 'Genshin Card 050', fileCode: 'Carta050', rarity: 'Comum' },
+  { id: 'genshin-051', themeId: 'genshin', name: 'Genshin Card 051', fileCode: 'Carta067', rarity: 'Comum' },
+  { id: 'genshin-052', themeId: 'genshin', name: 'Genshin Card 052', fileCode: 'Carta005', rarity: 'Comum' },
+  { id: 'genshin-053', themeId: 'genshin', name: 'Genshin Card 053', fileCode: 'Carta081', rarity: 'Comum' },
+  { id: 'genshin-054', themeId: 'genshin', name: 'Genshin Card 054', fileCode: 'Carta011', rarity: 'Comum' },
+  { id: 'genshin-055', themeId: 'genshin', name: 'Genshin Card 055', fileCode: 'Carta043', rarity: 'Comum' },
+  { id: 'genshin-056', themeId: 'genshin', name: 'Genshin Card 056', fileCode: 'Carta055', rarity: 'Comum' },
+  { id: 'genshin-057', themeId: 'genshin', name: 'Genshin Card 057', fileCode: 'Carta060', rarity: 'Comum' },
+  { id: 'genshin-058', themeId: 'genshin', name: 'Genshin Card 058', fileCode: 'Carta049', rarity: 'Comum' },
+  { id: 'genshin-059', themeId: 'genshin', name: 'Genshin Card 059', fileCode: 'Carta051', rarity: 'Comum' },
+  { id: 'genshin-060', themeId: 'genshin', name: 'Genshin Card 060', fileCode: 'Carta073', rarity: 'Comum' },
+  { id: 'genshin-061', themeId: 'genshin', name: 'Genshin Card 061', fileCode: 'Carta027', rarity: 'Comum' },
+  { id: 'genshin-062', themeId: 'genshin', name: 'Genshin Card 062', fileCode: 'Carta052', rarity: 'Comum' },
+  { id: 'genshin-063', themeId: 'genshin', name: 'Genshin Card 063', fileCode: 'Carta075', rarity: 'Rara' },
+  { id: 'genshin-064', themeId: 'genshin', name: 'Genshin Card 064', fileCode: 'Carta002', rarity: 'Rara' },
+  { id: 'genshin-065', themeId: 'genshin', name: 'Genshin Card 065', fileCode: 'Carta097', rarity: 'Rara' },
+  { id: 'genshin-066', themeId: 'genshin', name: 'Genshin Card 066', fileCode: 'Carta044', rarity: 'Rara' },
+  { id: 'genshin-067', themeId: 'genshin', name: 'Genshin Card 067', fileCode: 'Carta012', rarity: 'Rara' },
+  { id: 'genshin-068', themeId: 'genshin', name: 'Genshin Card 068', fileCode: 'Carta082', rarity: 'Rara' },
+  { id: 'genshin-069', themeId: 'genshin', name: 'Genshin Card 069', fileCode: 'Carta087', rarity: 'Rara' },
+  { id: 'genshin-070', themeId: 'genshin', name: 'Genshin Card 070', fileCode: 'Carta032', rarity: 'Rara' },
+  { id: 'genshin-071', themeId: 'genshin', name: 'Genshin Card 071', fileCode: 'Carta059', rarity: 'Rara' },
+  { id: 'genshin-072', themeId: 'genshin', name: 'Genshin Card 072', fileCode: 'Carta021', rarity: 'Rara' },
+  { id: 'genshin-073', themeId: 'genshin', name: 'Genshin Card 073', fileCode: 'Carta038', rarity: 'Rara' },
+  { id: 'genshin-074', themeId: 'genshin', name: 'Genshin Card 074', fileCode: 'Carta079', rarity: 'Rara' },
+  { id: 'genshin-075', themeId: 'genshin', name: 'Genshin Card 075', fileCode: 'Carta069', rarity: 'Rara' },
+  { id: 'genshin-076', themeId: 'genshin', name: 'Genshin Card 076', fileCode: 'Carta091', rarity: 'Rara' },
+  { id: 'genshin-077', themeId: 'genshin', name: 'Genshin Card 077', fileCode: 'Carta024', rarity: 'Rara' },
+  { id: 'genshin-078', themeId: 'genshin', name: 'Genshin Card 078', fileCode: 'Carta094', rarity: 'Rara' },
+  { id: 'genshin-079', themeId: 'genshin', name: 'Genshin Card 079', fileCode: 'Carta023', rarity: 'Rara' },
+  { id: 'genshin-080', themeId: 'genshin', name: 'Genshin Card 080', fileCode: 'Carta045', rarity: 'Rara' },
+  { id: 'genshin-081', themeId: 'genshin', name: 'Genshin Card 081', fileCode: 'Carta086', rarity: 'Rara' },
+  { id: 'genshin-082', themeId: 'genshin', name: 'Genshin Card 082', fileCode: 'Carta064', rarity: 'Rara' },
+  { id: 'genshin-083', themeId: 'genshin', name: 'Genshin Card 083', fileCode: 'Carta099', rarity: 'Rara' },
+  { id: 'genshin-084', themeId: 'genshin', name: 'Genshin Card 084', fileCode: 'Carta009', rarity: 'Rara' },
+  { id: 'genshin-085', themeId: 'genshin', name: 'Genshin Card 085', fileCode: 'Carta098', rarity: 'Rara' },
+  { id: 'genshin-086', themeId: 'genshin', name: 'Genshin Card 086', fileCode: 'Carta062', rarity: 'Rara' },
+  { id: 'genshin-087', themeId: 'genshin', name: 'Genshin Card 087', fileCode: 'Carta076', rarity: 'Rara' },
+  { id: 'genshin-088', themeId: 'genshin', name: 'Genshin Card 088', fileCode: 'Carta095', rarity: 'Rara' },
+  { id: 'genshin-089', themeId: 'genshin', name: 'Genshin Card 089', fileCode: 'Carta093', rarity: 'Rara' },
+  { id: 'genshin-090', themeId: 'genshin', name: 'Genshin Card 090', fileCode: 'Carta088', rarity: 'Rara' },
+  { id: 'genshin-091', themeId: 'genshin', name: 'Genshin Card 091', fileCode: 'Carta063', rarity: 'Rara' },
+  { id: 'genshin-092', themeId: 'genshin', name: 'Genshin Card 092', fileCode: 'Carta042', rarity: 'Rara' },
+  { id: 'genshin-093', themeId: 'genshin', name: 'Genshin Card 093', fileCode: 'Carta017', rarity: 'Rara' },
+  { id: 'genshin-094', themeId: 'genshin', name: 'Genshin Card 094', fileCode: 'Carta096', rarity: 'Rara' },
+  { id: 'genshin-095', themeId: 'genshin', name: 'Genshin Card 095', fileCode: 'Carta020', rarity: 'Rara' },
+  { id: 'genshin-096', themeId: 'genshin', name: 'Genshin Card 096', fileCode: 'Carta105', rarity: 'Épica' },
+  { id: 'genshin-097', themeId: 'genshin', name: 'Genshin Card 097', fileCode: 'Carta102', rarity: 'Épica' },
+  { id: 'genshin-098', themeId: 'genshin', name: 'Genshin Card 098', fileCode: 'Carta101', rarity: 'Épica' },
+  { id: 'genshin-099', themeId: 'genshin', name: 'Genshin Card 099', fileCode: 'Carta104', rarity: 'Épica' },
+  { id: 'genshin-100', themeId: 'genshin', name: 'Genshin Card 100', fileCode: 'Carta108', rarity: 'Épica' },
+  { id: 'genshin-101', themeId: 'genshin', name: 'Genshin Card 101', fileCode: 'Carta109', rarity: 'Épica' },
+  { id: 'genshin-102', themeId: 'genshin', name: 'Genshin Card 102', fileCode: 'Carta100', rarity: 'Épica' },
+  { id: 'genshin-103', themeId: 'genshin', name: 'Genshin Card 103', fileCode: 'Carta107', rarity: 'Épica' },
+  { id: 'genshin-104', themeId: 'genshin', name: 'Genshin Card 104', fileCode: 'Carta103', rarity: 'Épica' },
+  { id: 'genshin-105', themeId: 'genshin', name: 'Genshin Card 105', fileCode: 'Carta037', rarity: 'Épica' },
+  { id: 'genshin-106', themeId: 'genshin', name: 'Genshin Card 106', fileCode: 'Carta001', rarity: 'Lendária' },
+  { id: 'genshin-107', themeId: 'genshin', name: 'Genshin Card 107', fileCode: 'Carta092', rarity: 'Lendária' },
+  { id: 'genshin-108', themeId: 'genshin', name: 'Genshin Card 108', fileCode: 'Carta035', rarity: 'Lendária' },
+  { id: 'genshin-109', themeId: 'genshin', name: 'Genshin Card 109', fileCode: 'Carta019', rarity: 'Lendária' },
 ];
 
 function getCardImagePath(charData) {
@@ -1153,8 +1263,6 @@ function openChars() {
   });
 }
 
-// Arquivo: app.js
-
 // app.js - Seção 6. GACHA E PERSONAGENS -> Função renderCharGallery(themeId)
 
 function renderCharGallery(themeId) {
@@ -1204,13 +1312,13 @@ function renderCharGallery(themeId) {
 
     html += `
             <div class="${containerClasses}" 
-            // VAMOS REMOVER ESTILOS INLINE DESNECESSÁRIOS
-            // PARA DAR PRIORIDADE AO CSS EXTERNO
+            onclick="viewCardDetail('${char.id}')"
             style="
                 background: var(--card); 
                 border-radius: 8px; 
                 padding: 8px; 
                 text-align: center;
+                cursor: pointer;
             ">
                 <img 
                     src="${cardImagePathBase}.png" 
@@ -1251,10 +1359,56 @@ function renderGachaError() {
         </div>
     `;
 
-  // CRÍTICO: Usa updateModalContent, que é o sistema de NAVEGAÇÃO
-  // e garante que o modal de navegação esteja ativo (isModalOpen = true)
   updateModalContent(htmlContent);
-  // Nota: O botão "X" e o clique fora (hideModal) já estão no updateModalContent
+
+}
+
+function viewCardDetail(charId) {
+  const char = CHAR_POOL.find(c => c.id === charId);
+
+  if (!char) {
+    console.error('Carta não encontrada:', charId);
+    return;
+  }
+
+  const theme = GACHA_THEMES.find(t => t.id === char.themeId);
+
+  const isOwned = state.chars.includes(charId);
+  const isLocked = !isOwned;
+
+  // --- MUDANÇA CRÍTICA AQUI ---
+  // Sempre construímos o caminho da imagem real, confiando no CSS para o bloqueio.
+  const imagePathBase = getCardImagePath(char);
+  const imagePath = `${imagePathBase}.png`;
+
+  // Classes para CSS
+  const rarityClass = `rarity-${char.rarity.replace(/ /g, '_')}`;
+  // Usamos 'locked-detail' para aplicar o filtro de esmaecimento
+  const lockedClass = isLocked ? 'locked-detail' : '';
+
+  // Conteúdo
+  const cardName = isOwned ? char.name : '???';
+  const cardRarity = isOwned ? char.rarity.toUpperCase() : 'BLOQUEADA';
+
+  // Fallback para .jpg, caso .png não carregue
+  const fallbackError = `this.onerror=null; this.src='${imagePathBase}.jpg';`;
+
+  // 2. Constrói o conteúdo HTML para o modal
+  const modalContent = `
+        <div class="card-detail-view">
+            <img 
+                src="${imagePath}" 
+                alt="${char.name}" 
+                class="card-detail-image ${rarityClass} ${lockedClass}" 
+                onerror="${fallbackError}" 
+            />
+            <h3 class="card-detail-name">${cardName}</h3>
+            <p class="card-detail-rarity ${rarityClass}">${cardRarity}</p>
+        </div>
+    `;
+
+  // 3. Abre o modal
+  updateModalContent(modalContent);
 }
 
 function openGacha() {
