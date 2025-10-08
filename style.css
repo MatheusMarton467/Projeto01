@@ -498,7 +498,7 @@ select:focus {
 
 .btn-back-gallery {
   background: none;
-  border: none;
+  border: none !important; 
   color: var(--primary);
   font-size: 1rem;
   font-weight: 500;
@@ -508,10 +508,11 @@ select:focus {
   margin-bottom: 5px;
   padding: 10px 0;
   transition: color 0.2s, transform 0.2s;
+  outline: none !important;
 }
 
 .btn-back-gallery:hover {
-  color: var(--accent-c);
+  color: var(--accent-c) !important; 
 }
 
 .gallery-title-wrapper {
@@ -653,8 +654,8 @@ select:focus {
   z-index: 5;
 }
 /* ====================================================================
-   ESTILOS PARA O MODAL DE VISUALIZAÇÃO DE DETALHE DA GALERIA
-   ==================================================================== */
+   ESTILOS PARA O MODAL DE VISUALIZAÇÃO DE DETALHE DA GALERIA (AJUSTE FINAL)
+   ==================================================================== */
 
 .card-detail-view {
     display: flex;
@@ -662,36 +663,23 @@ select:focus {
     align-items: center;
     text-align: center;
     padding: 10px;
-    /* Garante que o conteúdo seja centralizado verticalmente no modal */
-    max-height: 80vh; 
+    max-height: 80vh;
     overflow-y: auto;
 }
 
 /* Define o tamanho da imagem da carta quando visualizada individualmente */
 .card-detail-image {
-    /* Define um tamanho grande para o destaque (Ajuste se precisar de mais ou menos) */
-    width: 350px; /* Mais largo para o destaque */
-    height: auto; /* Mantém a proporção perfeita! */
-    
-    /* Garante que a imagem se ajuste à largura máxima do modal em telas menores */
+    width: 350px; 
+    height: auto; 
     max-width: 100%;
-    
-    /* CRÍTICO: Mantém a proporção correta e garante que a imagem não seja cortada */
-    object-fit: cover; 
-    
+    object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
     margin-bottom: 20px;
     
-    /* Usa a borda de raridade (já definida nas classes rarity-XXX) */
-    padding: 6px; 
-}
-
-/* ESTILO CRÍTICO PARA IMAGENS BLOQUEADAS NA VISUALIZAÇÃO GRANDE */
-.card-detail-image.locked-detail {
-    /* Deixa a imagem em preto e branco e mais escura */
-    filter: grayscale(100%) brightness(30%); 
-    opacity: 0.9;
+    padding: 0;
+    border: 4px solid transparent; 
+    transition: box-shadow 0.3s ease;
 }
 
 .card-detail-name {
@@ -702,15 +690,114 @@ select:focus {
 }
 
 .card-detail-rarity {
-    font-size: 1.4rem;
-    font-weight: 900;
+    /* REMOVENDO O QUADRADO ENVOLVENTE */
+    background: none;
+    padding: 0; 
+    border: none;
+    
+    font-size: 1.1em;
+    font-weight: bold;
     text-transform: uppercase;
-    /* As cores serão aplicadas via classes rarity-XXX do seu CSS */
+    
+    text-shadow: none; 
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+    color: var(--text);
 }
+
+/* --------------------------------------------------------------------
+   ESTILOS DE BRILHO (GLOW) POR RARIDADE PARA O MODO DETALHE
+   -------------------------------------------------------------------- */
+
+/* REGRA PARA A IMAGEM QUANDO DESBLOQUEADA */
+/* (Estou simplificando o uso das variáveis --glow-rgb para clareza) */
+.card-detail-image.rarity-Lendária:not(.locked-detail) {
+    box-shadow: 0 0 15px 3px rgba(255, 180, 0, 0.7), 0 0 25px 5px rgba(255, 180, 0, 0.4);
+}
+.card-detail-image.rarity-Épica:not(.locked-detail) {
+    box-shadow: 0 0 15px 3px rgba(191, 0, 255, 0.7), 0 0 25px 5px rgba(191, 0, 255, 0.4);
+}
+.card-detail-image.rarity-Rara:not(.locked-detail) {
+    box-shadow: 0 0 15px 3px rgba(0, 191, 255, 0.7), 0 0 25px 5px rgba(0, 191, 255, 0.4);
+}
+.card-detail-image.rarity-Comum:not(.locked-detail) {
+    box-shadow: 0 0 15px 3px rgba(57, 255, 20, 0.7), 0 0 25px 5px rgba(57, 255, 20, 0.4);
+}
+
+/* REGRA PARA O TEXTO DA RARIDADE QUANDO DESBLOQUEADA */
+.card-detail-rarity.rarity-Lendária:not(.locked-detail) {
+    color: rgb(255, 180, 0);
+    text-shadow: 0 0 8px rgb(255, 180, 0), 0 0 12px rgba(255, 180, 0, 0.5);
+}
+.card-detail-rarity.rarity-Épica:not(.locked-detail) {
+    color: rgb(191, 0, 255);
+    text-shadow: 0 0 8px rgb(191, 0, 255), 0 0 12px rgba(191, 0, 255, 0.5);
+}
+.card-detail-rarity.rarity-Rara:not(.locked-detail) {
+    color: rgb(0, 191, 255);
+    text-shadow: 0 0 8px rgb(0, 191, 255), 0 0 12px rgba(0, 191, 255, 0.5);
+}
+.card-detail-rarity.rarity-Comum:not(.locked-detail) {
+    color: rgb(57, 255, 20);
+    text-shadow: 0 0 8px rgb(57, 255, 20), 0 0 12px rgba(57, 255, 20, 0.5);
+}
+
+.card-detail-image.locked-detail {
+    filter: grayscale(100%) brightness(30%);
+    opacity: 0.9;
+    box-shadow: none !important; /* REMOVE O BRILHO DA CARTA */
+    border-color: transparent !important;
+}
+
+/* ESTILO CRÍTICO: TEXTO "???" E RARIDADE (sem brilho e apagado) */
+.card-detail-name.locked-detail,
+.card-detail-rarity.locked-detail {
+    color: var(--muted) !important;
+    text-shadow: none !important;
+}
+
+.locked-label {
+    /* ANULA COMPLETAMENTE O BRILHO E A COR */
+    color: var(--muted) !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 
 /* Ajuste o modal para telas pequenas se necessário */
 @media (max-width: 600px) {
     .card-detail-image {
         width: 100%; /* Ocupa toda a largura do modal */
     }
+}
+ .card-detail-rarity.locked-detail {
+    color: var(--muted) !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important; 
+    padding: 0 !important; 
+}
+
+
+.card-detail-name.locked-detail {
+    color: var(--muted) !important;
+    text-shadow: none !important;
+}
+
+
+.rarity-Comum.locked-detail,
+.rarity-Rara.locked-detail,
+.rarity-Épica.locked-detail,
+.rarity-Lendária.locked-detail {
+    color: var(--muted) !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
 }

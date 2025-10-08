@@ -353,9 +353,8 @@ function checkAchievements() {
     // 1. Condição: Checa se foi alcançada E se AINDA não está no estado
     if (ach.condition(state) && !state.achieved.includes(id)) {
 
-      state.achieved.push(id);
-
-      saveState();
+      state.achieved.push(id); 
+      saveState(); 
 
       showModal(`
                 <div data-action="achievement" data-ach-id="${id}" data-gems="${ach.reward.gems}" data-xp="${ach.reward.xp}">
@@ -1372,18 +1371,18 @@ function viewCardDetail(charId) {
   }
 
   const theme = GACHA_THEMES.find(t => t.id === char.themeId);
+  // CRÍTICO: Se não há tema, não podemos voltar.
+  if (!theme) return;
 
   const isOwned = state.chars.includes(charId);
   const isLocked = !isOwned;
 
-  // --- MUDANÇA CRÍTICA AQUI ---
   // Sempre construímos o caminho da imagem real, confiando no CSS para o bloqueio.
   const imagePathBase = getCardImagePath(char);
   const imagePath = `${imagePathBase}.png`;
 
   // Classes para CSS
   const rarityClass = `rarity-${char.rarity.replace(/ /g, '_')}`;
-  // Usamos 'locked-detail' para aplicar o filtro de esmaecimento
   const lockedClass = isLocked ? 'locked-detail' : '';
 
   // Conteúdo
@@ -1393,8 +1392,21 @@ function viewCardDetail(charId) {
   // Fallback para .jpg, caso .png não carregue
   const fallbackError = `this.onerror=null; this.src='${imagePathBase}.jpg';`;
 
+  // 1. Botão de Voltar
+  // Passamos o theme.id para a função de voltar
+  const backButtonHtml = `
+      <button 
+        class="btn-back-gallery" 
+        onclick="renderCharGallery('${theme.id}')" 
+        style="margin-bottom: 10px; align-self: flex-start; background: none; border: 1px solid var(--muted); color: var(--text);"
+      >
+          ← Voltar para Galeria: ${theme.name}
+      </button>`;
+
+
   // 2. Constrói o conteúdo HTML para o modal
   const modalContent = `
+        ${backButtonHtml}
         <div class="card-detail-view">
             <img 
                 src="${imagePath}" 
@@ -1402,8 +1414,8 @@ function viewCardDetail(charId) {
                 class="card-detail-image ${rarityClass} ${lockedClass}" 
                 onerror="${fallbackError}" 
             />
-            <h3 class="card-detail-name">${cardName}</h3>
-            <p class="card-detail-rarity ${rarityClass}">${cardRarity}</p>
+            <h3 class="card-detail-name ${lockedClass}">${cardName}</h3>
+            <p class="card-detail-rarity ${rarityClass} ${lockedClass}">${cardRarity}</p>
         </div>
     `;
 
@@ -1686,40 +1698,62 @@ function showModal(htmlContent) {
  * Funções auxiliares para aplicar recompensas *somente* ao exibir a notificação.
  */
 function applyNotificationReward() {
-  // Procura por um elemento de recompensa no modal
-  const levelUpEl = el.modalContent.querySelector('[data-action="level-up"]');
-  const achieveEl = el.modalContent.querySelector('[data-action="achievement"]');
+    const levelUpEl = el.modalContent.querySelector('[data-action="level-up"]');
+    const achieveEl = el.modalContent.querySelector('[data-action="achievement"]'); 
+    let rewardApplied = false;
 
-  if (levelUpEl) {
-    // Lógica de Level Up
-    const level = Number(levelUpEl.dataset.level);
-    const gems = Number(levelUpEl.dataset.gems);
-    const xpBonus = Number(levelUpEl.dataset.xpBonus);
+    // 1. Lógica de Level Up
+    if (levelUpEl) {
+        // ... (Lógica de Level Up permanece inalterada) ...
+        const gems = Number(levelUpEl.getAttribute('data-gems'));
+        const xpBonus = Number(levelUpEl.getAttribute('data-xp-bonus'));
+        const level = Number(levelUpEl.getAttribute('data-level'));
+        
+        if (isNaN(gems) || isNaN(xpBonus)) {
+             console.error("[ERRO RECOMPENSA LVL] Dados inválidos para Level Up!");
+        } else {
+             state.gems += gems;
+             state.xp += xpBonus;
+             console.log(`[REWARD] Level Up para ${level} aplicado: +${gems} Gems, +${xpBonus} XP.`);
+             rewardApplied = true;
+        }
+    } 
+    
+    // 2. Lógica de Conquista
+    if (achieveEl) {
+        // Verifica se a recompensa AINDA NÃO FOI APLICADA (Flag é diferente de 'APPLIED')
+        if (achieveEl.getAttribute('data-reward-status') !== 'APPLIED') { 
+            
+            // ... (Lógica de leitura de dados permanece) ...
+            const achId = achieveEl.getAttribute('data-ach-id') || achieveEl.getAttribute('data-achid') || achieveEl.getAttribute('data-ach_id');
+            const gems = Number(achieveEl.getAttribute('data-gems'));
+            const xp = Number(achieveEl.getAttribute('data-xp'));
+            
+            if (!achId || isNaN(gems) || isNaN(xp) || gems < 0) {
+                 console.error("[ERRO CRÍTICO DE RECOMPENSA] Falha na leitura dos atributos da Conquista. LIDO:", { achId, gems, xp });
+                 return; 
+            }
 
-    state.gems += gems;
-    state.xp += xpBonus;
-    console.log(`[REWARD] Level Up para ${level} aplicado: +${gems} Gems, +${xpBonus} XP.`);
+            // 🏆 APLICA A RECOMPENSA
+            state.gems += gems;
+            state.xp += xp;
+            rewardApplied = true;
+            console.log(`[REWARD] Conquista "${achId}" (APLICADA!) Gems: +${gems}, XP: +${xp}.`);
 
-  } else if (achieveEl) {
-    // Lógica de Conquista
-    const achId = achieveEl.dataset.achId;
-    const gems = Number(achieveEl.dataset.gems);
-    const xp = Number(achieveEl.dataset.xp);
-
-    // Aplica e registra a conquista *agora*
-    if (!state.achieved.includes(achId)) {
-      state.achieved.push(achId);
-      state.gems += gems;
-      state.xp += xp;
-      console.log(`[REWARD] Conquista "${achId}" aplicada: +${gems} Gems, +${xp} XP.`);
+            // 🛑 CRÍTICO: MARCA O ELEMENTO COMO PAGO para evitar repetição
+            achieveEl.setAttribute('data-reward-status', 'APPLIED');
+        } else {
+            console.log(`[INFO] Conquista já processada no modal. Recompensa ignorada.`);
+        }
     }
-  }
 
-  // Se alguma recompensa foi aplicada, salve e renderize o status
-  if (levelUpEl || achieveEl) {
-    saveState();
-    renderStatus();
-  }
+    // Se alguma recompensa foi aplicada, salve e renderize o status
+    if (rewardApplied) {
+        saveState();
+        renderStatus();
+        console.log(`[SAVE] Novo estado salvo. Gems=${state.gems}, XP=${state.xp}.`);
+        checkLevelUp();
+    }
 }
 
 
@@ -1761,7 +1795,16 @@ function processQueue() {
 function hideModal() {
   console.log("[hideModal] Fechando modal.");
   el.modal.classList.remove('show');
+
+  // Verifica se o modal que está sendo fechado é um modal de MENSAGEM/NOTIFICAÇÃO
+  const isMessageModal = el.modalContent.classList.contains('message-modal-container');
+
   setTimeout(() => {
+    // Se for um modal de mensagem, aplicamos a recompensa antes de limpar o conteúdo!
+    if (isMessageModal) {
+      applyNotificationReward();
+    }
+
     // Essas ações devem ocorrer SÓ DEPOIS do atraso:
     el.modalContent.classList.remove('message-modal-container');
     el.modalContent.innerHTML = '';
