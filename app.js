@@ -290,14 +290,13 @@ const ACHIEVEMENT_LIST = {
     name: 'Iniciante Colecionador',
     desc: 'Desbloquear 10 cartas.',
     condition: (s) => s.chars.length >= 10,
-    reward: { gems: 15, xp: 100 }
+    reward: { gems: 20, xp: 100 }
   },
   'gacha_half': {
     name: 'Metade do Baralho',
-    desc: 'Desbloquear 50% das cartas disponíveis (20 cartas).',
-    // Lembre-se, o CHAR_POOL tem 40 cartas no total
-    condition: (s) => s.chars.length >= 20,
-    reward: { gems: 30, xp: 300 }
+    desc: 'Desbloquear 50 das cartas disponíveis',
+    condition: (s) => s.chars.length >= 50,
+    reward: { gems: 60, xp: 300 }
   },
 
   // ----------------------------------------------------
@@ -324,13 +323,13 @@ const ACHIEVEMENT_LIST = {
     desc: 'Ter 50 Gems simultaneamente.',
     // Usa o estado atual das gems
     condition: (s) => s.gems >= 50,
-    reward: { gems: 10, xp: 50 }
+    reward: { gems: 25, xp: 50 }
   },
   'gem_rich': {
     name: 'Magnata do Gacha',
     desc: 'Ter 100 Gems simultaneamente.',
     condition: (s) => s.gems >= 100,
-    reward: { gems: 25, xp: 100 }
+    reward: { gems: 50, xp: 100 }
   },
 
   // ----------------------------------------------------
@@ -353,8 +352,8 @@ function checkAchievements() {
     // 1. Condição: Checa se foi alcançada E se AINDA não está no estado
     if (ach.condition(state) && !state.achieved.includes(id)) {
 
-      state.achieved.push(id); 
-      saveState(); 
+      state.achieved.push(id);
+      saveState();
 
       showModal(`
                 <div data-action="achievement" data-ach-id="${id}" data-gems="${ach.reward.gems}" data-xp="${ach.reward.xp}">
@@ -415,7 +414,7 @@ function openAchievements() {
 const GACHA_THEMES = [
   // Assumimos que a maioria é PNG
   { id: 'pokemon', name: 'Pokémon', path: 'Gatcha/Pokemon', cost: 5, coverExt: 'png' },
-  { id: 'digimon', name: 'Digimon', path: 'Gatcha/Digimon Cards', cost: 5, coverExt: 'jpg' }, // PNG
+  { id: 'digimon', name: 'Digimon', path: 'Gatcha/Digimon Cards', cost: 5, coverExt: 'jpg' },
   { id: 'yugioh', name: 'Yu-Gi-Oh!', path: 'Gatcha/Yugioh', cost: 5, coverExt: 'png' },
   { id: 'naruto', name: 'Naruto', path: 'Gatcha/NarutoTCG', cost: 5, coverExt: 'jpg' },
   { id: 'genshin', name: 'Genshin', path: 'Gatcha/Genshin', cost: 5, coverExt: 'png' },
@@ -1698,62 +1697,62 @@ function showModal(htmlContent) {
  * Funções auxiliares para aplicar recompensas *somente* ao exibir a notificação.
  */
 function applyNotificationReward() {
-    const levelUpEl = el.modalContent.querySelector('[data-action="level-up"]');
-    const achieveEl = el.modalContent.querySelector('[data-action="achievement"]'); 
-    let rewardApplied = false;
+  const levelUpEl = el.modalContent.querySelector('[data-action="level-up"]');
+  const achieveEl = el.modalContent.querySelector('[data-action="achievement"]');
+  let rewardApplied = false;
 
-    // 1. Lógica de Level Up
-    if (levelUpEl) {
-        // ... (Lógica de Level Up permanece inalterada) ...
-        const gems = Number(levelUpEl.getAttribute('data-gems'));
-        const xpBonus = Number(levelUpEl.getAttribute('data-xp-bonus'));
-        const level = Number(levelUpEl.getAttribute('data-level'));
-        
-        if (isNaN(gems) || isNaN(xpBonus)) {
-             console.error("[ERRO RECOMPENSA LVL] Dados inválidos para Level Up!");
-        } else {
-             state.gems += gems;
-             state.xp += xpBonus;
-             console.log(`[REWARD] Level Up para ${level} aplicado: +${gems} Gems, +${xpBonus} XP.`);
-             rewardApplied = true;
-        }
-    } 
-    
-    // 2. Lógica de Conquista
-    if (achieveEl) {
-        // Verifica se a recompensa AINDA NÃO FOI APLICADA (Flag é diferente de 'APPLIED')
-        if (achieveEl.getAttribute('data-reward-status') !== 'APPLIED') { 
-            
-            // ... (Lógica de leitura de dados permanece) ...
-            const achId = achieveEl.getAttribute('data-ach-id') || achieveEl.getAttribute('data-achid') || achieveEl.getAttribute('data-ach_id');
-            const gems = Number(achieveEl.getAttribute('data-gems'));
-            const xp = Number(achieveEl.getAttribute('data-xp'));
-            
-            if (!achId || isNaN(gems) || isNaN(xp) || gems < 0) {
-                 console.error("[ERRO CRÍTICO DE RECOMPENSA] Falha na leitura dos atributos da Conquista. LIDO:", { achId, gems, xp });
-                 return; 
-            }
+  // 1. Lógica de Level Up
+  if (levelUpEl) {
+    // ... (Lógica de Level Up permanece inalterada) ...
+    const gems = Number(levelUpEl.getAttribute('data-gems'));
+    const xpBonus = Number(levelUpEl.getAttribute('data-xp-bonus'));
+    const level = Number(levelUpEl.getAttribute('data-level'));
 
-            // 🏆 APLICA A RECOMPENSA
-            state.gems += gems;
-            state.xp += xp;
-            rewardApplied = true;
-            console.log(`[REWARD] Conquista "${achId}" (APLICADA!) Gems: +${gems}, XP: +${xp}.`);
-
-            // 🛑 CRÍTICO: MARCA O ELEMENTO COMO PAGO para evitar repetição
-            achieveEl.setAttribute('data-reward-status', 'APPLIED');
-        } else {
-            console.log(`[INFO] Conquista já processada no modal. Recompensa ignorada.`);
-        }
+    if (isNaN(gems) || isNaN(xpBonus)) {
+      console.error("[ERRO RECOMPENSA LVL] Dados inválidos para Level Up!");
+    } else {
+      state.gems += gems;
+      state.xp += xpBonus;
+      console.log(`[REWARD] Level Up para ${level} aplicado: +${gems} Gems, +${xpBonus} XP.`);
+      rewardApplied = true;
     }
+  }
 
-    // Se alguma recompensa foi aplicada, salve e renderize o status
-    if (rewardApplied) {
-        saveState();
-        renderStatus();
-        console.log(`[SAVE] Novo estado salvo. Gems=${state.gems}, XP=${state.xp}.`);
-        checkLevelUp();
+  // 2. Lógica de Conquista
+  if (achieveEl) {
+    // Verifica se a recompensa AINDA NÃO FOI APLICADA (Flag é diferente de 'APPLIED')
+    if (achieveEl.getAttribute('data-reward-status') !== 'APPLIED') {
+
+      // ... (Lógica de leitura de dados permanece) ...
+      const achId = achieveEl.getAttribute('data-ach-id') || achieveEl.getAttribute('data-achid') || achieveEl.getAttribute('data-ach_id');
+      const gems = Number(achieveEl.getAttribute('data-gems'));
+      const xp = Number(achieveEl.getAttribute('data-xp'));
+
+      if (!achId || isNaN(gems) || isNaN(xp) || gems < 0) {
+        console.error("[ERRO CRÍTICO DE RECOMPENSA] Falha na leitura dos atributos da Conquista. LIDO:", { achId, gems, xp });
+        return;
+      }
+
+      // 🏆 APLICA A RECOMPENSA
+      state.gems += gems;
+      state.xp += xp;
+      rewardApplied = true;
+      console.log(`[REWARD] Conquista "${achId}" (APLICADA!) Gems: +${gems}, XP: +${xp}.`);
+
+      // 🛑 CRÍTICO: MARCA O ELEMENTO COMO PAGO para evitar repetição
+      achieveEl.setAttribute('data-reward-status', 'APPLIED');
+    } else {
+      console.log(`[INFO] Conquista já processada no modal. Recompensa ignorada.`);
     }
+  }
+
+  // Se alguma recompensa foi aplicada, salve e renderize o status
+  if (rewardApplied) {
+    saveState();
+    renderStatus();
+    console.log(`[SAVE] Novo estado salvo. Gems=${state.gems}, XP=${state.xp}.`);
+    checkLevelUp();
+  }
 }
 
 
@@ -1882,6 +1881,7 @@ function init() {
   cachedLevel = levelFromXp(state.xp);
   // 2. Se não houver missões, adiciona demos (UX)
   if (state.missions.length === 0) {
+    addMission('Não xingar ninguem enquanto usa rede social XD (Demo', 3);
     addMission('Fazer 25 minutos de foco (Demo)', 2);
     addMission('Beber 2L de água (Demo)', 1);
   }
